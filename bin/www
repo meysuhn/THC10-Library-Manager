@@ -7,8 +7,9 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('cmch10v2:server');
+var debug = require('debug')('cmch10v2:server'); // NOTE this needs updating? Old dir name
 var http = require('http');
+var sequelize = require("../models").sequelize; // CM: this line added as per NODE SQL tut.
 
 /**
  * Get port from environment and store in Express.
@@ -26,8 +27,9 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-
-server.listen(port);
+sequelize.sync().then(function(){ // CM: this line added as per NODE SQL tut.
+  server.listen(port);
+});
 server.on('error', onError);
 server.on('listening', onListening);
 

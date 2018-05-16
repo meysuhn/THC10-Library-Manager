@@ -1,7 +1,13 @@
+/* eslint-disable */
+
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var Loans = sequelize.define('Loans', {
-    id: DataTypes.INTEGER,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true
+    },
+
     book_id: DataTypes.INTEGER,
     patron_id: DataTypes.INTEGER,
     loaned_on: DataTypes.DATE,
