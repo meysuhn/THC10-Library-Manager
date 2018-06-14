@@ -2,15 +2,7 @@ extends layout
 
 block content
     h1 Checked Out Books
-    p
-      a.button(href='new_book.html') Create New Book
-    p
-      | Filters
-      a(href='all_books.html') All
-      |
-      a(href='overdue_books.html') Overdue
-      |
-      a(href='checked_books.html') Checked Out
+    include includes/books_nav.pug
     table
       thead
         tr
@@ -19,27 +11,11 @@ block content
           th Genre
           th Year Released
       tbody
-        tr
-          td
-            a(href='book_detail.html') Emma
-          td Jane Austen
-          td Classic
-          td 1815
-        tr
-          td
-            a(href='book_detail.html') Harry Potter and the Goblet of Fire
-          td J.K. Rowling
-          td Fantasy
-          td 2000
-        tr
-          td
-            a(href='book_detail.html') A Brief History of Time
-          td Stephen Hawking
-          td Non Fiction
-          td 1988
-        tr
-          td
-            a(href='book_detail.html') The Universe in a Nutshell
-          td Stephen Hawking
-          td Non Fiction
-          td 2001
+        each book in checkedBooks
+          tr
+            td
+              a(href=`/books/${book.id}`)=book.Book.title
+            td=book.Book.author
+            td=book.Book.genre
+            td=book.Book.first_published
+//- Must be a capital letter & singular on the 'included model'

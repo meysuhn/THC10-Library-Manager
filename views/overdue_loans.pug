@@ -2,15 +2,7 @@ extends layout
 
 block content
     h1 Overdue Loans
-    p
-      a.button(href='new_loan.html') Create New Loan
-    p
-      | Filters
-      a(href='all_loans.html') All
-      |
-      a(href='overdue_loans.html') Overdue
-      |
-      a(href='checked_loans.html') Checked Out
+    include includes/loans_nav.pug
     table
       thead
         tr
@@ -21,33 +13,14 @@ block content
           th Returned on
           th Action
       tbody
-        tr
-          td
-            a(href='book_detail.html') Harry Potter and the Goblet of Fire
-          td
-            a(href='patron_detail.html') Andrew Chalkley
-          td 2015-12-11
-          td 2015-12-18
-          td
-          td
-            a.button(href='return_book.html') Return Book
-        tr
-          td
-            a(href='book_detail.html') A Brief History of Time
-          td
-            a(href='patron_detail.html') Andrew Chalkley
-          td 2015-12-12
-          td 2015-12-19
-          td
-          td
-            a.button(href='return_book.html') Return Book
-        tr
-          td
-            a(href='book_detail.html') The Universe in a Nutshell
-          td
-            a(href='patron_detail.html') Alena Holligan
-          td 2015-12-13
-          td 2015-12-20
-          td
-          td
-            a.button(href='return_book.html') Return Book
+        each loan in overdueLoans
+          tr
+            td
+              a(href=`/books/${loan.id}`)=loan.Book.title
+            td
+              a(href=`/patrons/${loan.id}`)=loan.Patron.first_name  + ' ' + loan.Patron.last_name
+            td=loan.loaned_on
+            td=loan.return_by
+            td
+            td
+              a.button(href='return_book.html') Return Book

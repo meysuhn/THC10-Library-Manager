@@ -2,10 +2,12 @@ extends layout
 
 block content
     h1 New Book
-    form
+    
+    form(method='post', action='/newbook')
       p
         label(for='title') Title
-        input#title(type='text')
+        input#title(type='text', name='title', value=title)
+        
       p
         label(for='author') Author
         input#author(type='text')
