@@ -9,6 +9,7 @@ const Loans = require("../models").Loans;
 const Patrons = require("../models").Patrons;
 const moment = require('moment');
 
+
 const router = express.Router();
 
 // Get current date in specified format.
@@ -21,21 +22,21 @@ router.get('/books', (req, res) => {
   });
 });
 
-// GET new book
+// GET new book form
 router.get('/newbook', (req, res) => {
   res.render('new_book');
 });
 
 
-// Create New Book Experiment
-// router.post('/newbook', (req, res, next) => {
-//   Books.create(req.body).then(() => { // Call the create ORM method on the Books model
-//     res.redirect('/books');
-//   });
-// });
+// Add New Book
+router.post('/newbook', (req, res) => {
+  Books.create(req.body).then(() => { // Call the create ORM method on the Books model
+    res.redirect('/books');
+  });
+});
+
 
 // GET overdue books
-
 router.get('/overduebooks', (req, res) => {
   const todaysDate = getDate();
   Loans.findAll({

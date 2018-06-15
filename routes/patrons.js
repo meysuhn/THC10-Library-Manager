@@ -11,9 +11,16 @@ const Patrons = require("../models").Patrons;
 const router = express.Router();
 
 
-// Create new patron
+// GET new patron form
 router.get('/newpatron', (req, res) => {
   res.render('new_patron');
+});
+
+// Add New Patron
+router.post('/newpatron', (req, res) => {
+  Patrons.create(req.body).then(() => { // Call the create ORM method on the Books model
+    res.redirect('/patrons');
+  });
 });
 
 
