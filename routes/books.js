@@ -1,5 +1,3 @@
-// this file is all me.
-
 const express = require('express');
 
 // Require Books, Loans and Patrons Models in this routes file
@@ -74,6 +72,17 @@ router.get('/checkedbooks', (req, res) => {
 router.get('/books/:id', (req, res) => {
   Books.findById(req.params.id).then((bookDetail) => {
     res.render('book_detail', { bookDetail });
+  });
+});
+
+
+// PUT Update Book Detail
+router.put('/books/:id', (req, res) => {
+  // Article needs to be found first
+  Books.findById(req.params.id).then((bookDetail) => {
+    bookDetail.update(req.body); // update method returns a promise
+  }).then(() => { // bookDetail here is the updated book
+    res.redirect('/books');
   });
 });
 
