@@ -12,7 +12,7 @@ const router = express.Router();
 
 
 // GET new patron form
-router.get('/newpatron', (req, res) => {
+router.get('/patrons/newpatron', (req, res) => {
   res.render('new_patron');
 });
 
@@ -33,28 +33,18 @@ router.get('/patrons', (req, res) => {
 
 // Get Patron Detail
 router.get('/patrons/:id', (req, res) => {
-  Patrons.findById(req.params.id).then((patron) => {
-    res.render('patron_detail', { patron });
+  Patrons.findById(req.params.id).then((patronDetail) => {
+    res.render('patron_detail', { patronDetail });
   });
-
-  // Patrons.findOne(req.params.id).then((onePatron) => {
-  //   // console.log(onePatron);
-  //   res.render('patron_detail', { onePatron });
-  // });
-
-  // Patrons.findOne({
-  //   where: [
-  //     { id: req.params.id },
-  //   ],
-  // }).then(onePatron);
-  // console.log('onePatron');
-  // res.render('patron_detail', { onePatron });
 });
 
-// router.get('/patrondetail', (req, res) => {
-//   Patrons.find().then((patron) => { // You need to build on this find method.
-//     res.render('patron_detail', { patron });
-//   });
-// });
+// POST Update Book Detail
+router.post('/patrons/:id', (req, res) => {
+  Patrons.findById(req.params.id).then((patronDetail) => {
+    patronDetail.update(req.body); // update method returns a promise
+  }).then(() => { // bookDetail here is the updated book
+    res.redirect('/patrons');
+  });
+});
 
 module.exports = router; // NOTE add the module to router middleware object?

@@ -21,7 +21,7 @@ router.get('/books', (req, res) => {
 });
 
 // GET new book form
-router.get('/newbook', (req, res) => {
+router.get('/books/newbook', (req, res) => {
   res.render('new_book');
 });
 
@@ -35,7 +35,7 @@ router.post('/newbook', (req, res) => {
 
 
 // GET overdue books
-router.get('/overduebooks', (req, res) => {
+router.get('/books/overduebooks', (req, res) => {
   const todaysDate = getDate();
   Loans.findAll({
     where: {
@@ -54,7 +54,7 @@ router.get('/overduebooks', (req, res) => {
 
 
 // List Checked Out
-router.get('/checkedbooks', (req, res) => {
+router.get('/books/checkedbooks', (req, res) => {
   Loans.findAll({
     where: {
       returned_on: null,
@@ -76,8 +76,8 @@ router.get('/books/:id', (req, res) => {
 });
 
 
-// PUT Update Book Detail
-router.put('/books/:id', (req, res) => {
+// POST Update Book Detail
+router.post('/books/:id', (req, res) => {
   // Article needs to be found first
   Books.findById(req.params.id).then((bookDetail) => {
     bookDetail.update(req.body); // update method returns a promise

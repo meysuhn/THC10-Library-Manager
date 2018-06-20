@@ -28,7 +28,7 @@ router.get('/loans', (req, res) => {
 
 
 // List Checked Out
-router.get('/checkedloans', (req, res) => {
+router.get('/loans/checkedloans', (req, res) => {
   Loans.findAll({
     where: {
       returned_on: null,
@@ -44,12 +44,12 @@ router.get('/checkedloans', (req, res) => {
 
 
 // New Loan
-router.get('/newloan', (req, res) => { // NOTE second level domains don't get the stylesheet for some reason
+router.get('/loans/newloan', (req, res) => { // NOTE second level domains don't get the stylesheet for some reason
   res.render('new_loan');
 });
 
 // List Overdue
-router.get('/overdueloans', (req, res) => {
+router.get('/loans/overdueloans', (req, res) => {
   const todaysDate = getDate();
   Loans.findAll({
     where: {
