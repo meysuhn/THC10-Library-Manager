@@ -1,8 +1,8 @@
-extends layout
+extends ../layout
 
 block content
     h1 Loans
-    include includes/loans_nav.pug
+    include ../includes/loans_nav.pug
     table
       thead
         tr
@@ -23,7 +23,7 @@ block content
                 td=loan.return_by
                 td
                 td
-                  a.button(href='return_book.html') Return Book
+                  a.button(href='return_book') Return Book
 
 
   

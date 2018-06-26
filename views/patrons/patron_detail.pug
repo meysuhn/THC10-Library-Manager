@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 block content
     h1 Patron: #{patronDetail.first_name} #{patronDetail.last_name}
@@ -23,4 +23,8 @@ block content
         input#zip_code(type='text', name="zip_code" value=patronDetail.zip_code)
       p
         input(type='submit', value='Update')
-    include includes/loan_history.pug
+    h2 Loan History
+    if loanHistory.length > 0
+        include ../includes/loan_history.pug
+    else 
+      p There is no Loan History for #{patronDetail.first_name} #{patronDetail.last_name}

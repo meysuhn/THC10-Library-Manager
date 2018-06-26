@@ -13,7 +13,7 @@ const router = express.Router();
 
 // GET new patron form
 router.get('/patrons/newpatron', (req, res) => {
-  res.render('new_patron');
+  res.render('patrons/new_patron');
 });
 
 // Add New Patron
@@ -27,16 +27,27 @@ router.post('/newpatron', (req, res) => {
 // List All Patrons
 router.get('/patrons', (req, res) => {
   Patrons.findAll().then((patrons) => {
-    res.render('all_patrons', { patrons });
+    res.render('patrons/all_patrons', { patrons });
   });
 });
 
 // Get Patron Detail
 router.get('/patrons/:id', (req, res) => {
   Patrons.findById(req.params.id).then((patronDetail) => {
-    res.render('patron_detail', { patronDetail });
+    Loans.findAll({
+      where: {
+        patron_id: req.params.id,
+      },
+      include: [
+        { model: Books },
+        { model: Patrons },
+      ],
+    }).then((loanHistory) => {
+      res.render('patrons/patron_detail', { patronDetail, loanHistory });
+    });
   });
 });
+
 
 // POST Update Book Detail
 router.post('/patrons/:id', (req, res) => {

@@ -12,7 +12,10 @@ const moment = require('moment');
 const router = express.Router();
 
 // Get current date in specified format.
-const getDate = () => moment().format().toString().substring(0, 10);
+const getDate = () => moment().format('YYYY-MM-DD');
+
+// Get date 7 days from today.
+const getDate7DaysFromNow = () => moment(new Date().setDate(new Date().getDate() + 7)).format('YYYY-MM-DD');
 
 // List All Loans
 router.get('/loans', (req, res) => {
@@ -22,7 +25,7 @@ router.get('/loans', (req, res) => {
       { model: Books },
     ],
   }).then((loans) => { // Pass the returned books to the render as an argument here,
-    res.render('all_loans', { loans }); // Shorthand. Otherwise could be {loans:loans}
+    res.render('loans/all_loans', { loans }); // Shorthand. Otherwise could be {loans:loans}
   });
 });
 
@@ -38,15 +41,38 @@ router.get('/loans/checkedloans', (req, res) => {
       { model: Books },
     ],
   }).then((checkedloans) => {
-    res.render('checked_loans', { checkedloans });
+    res.render('loans/checked_loans', { checkedloans });
   });
 });
 
 
-// New Loan
-router.get('/loans/newloan', (req, res) => { // NOTE second level domains don't get the stylesheet for some reason
-  res.render('new_loan');
+// GET New Loan Page
+router.get('/loans/new', (req, res) => {
+  const newLoanDate = getDate();
+  const returnDate = getDate7DaysFromNow();
+  Books.findAll().then((availableBooks) => {
+    // NOTE Need to amend this to remove books that are already loaned out.
+    Patrons.findAll().then((patrons) => {
+      res.render('loans/new_loan', {
+        availableBooks, patrons, newLoanDate, returnDate,
+      });
+    });
+  });
 });
+
+
+// POST New Loan
+router.post('/new', (req, res) => {
+  // const newLoanDate = getDate();
+  // const ReturnDate = getDate7DaysFromNow();
+  Loans.create(req.body).then(() => { // Call the create ORM method on the Loans model
+    // res.render('new_loan', { newLoanDate, ReturnDate });
+    console.log('MASON!!!!');
+    console.log(getDate7DaysFromNow());
+    res.redirect('/loans');
+  });
+});
+
 
 // List Overdue
 router.get('/loans/overdueloans', (req, res) => {
@@ -63,8 +89,17 @@ router.get('/loans/overdueloans', (req, res) => {
       { model: Books },
     ],
   }).then((overdueLoans) => {
-    res.render('overdue_loans', { overdueLoans });
+    res.render('loans/overdue_loans', { overdueLoans });
   });
 });
+
+// GET Return BOOK
+router.get('/return', (req, res) => {
+  // Need to get the data of the required book in here
+  res.render('return_book');
+});
+
+
+// POST Return BOOK
 
 module.exports = router;

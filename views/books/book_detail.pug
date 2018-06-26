@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 block content
     h1 Book: #{bookDetail.title}
@@ -17,4 +17,8 @@ block content
         input#first_published(type='text', name="first_published" value=bookDetail.first_published)
       p
         input(type='submit', value='Update')
-    include includes/loan_history.pug
+    h2 Loan History
+    if loanHistory.length > 0
+        include ../includes/loan_history.pug
+    else 
+      p There is no Loan History for #{bookDetail.title}

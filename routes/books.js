@@ -16,13 +16,13 @@ const getDate = () => moment().format().toString().substring(0, 10);
 // BOOK ROUTES //
 router.get('/books', (req, res) => {
   Books.findAll().then((books) => { // Pass the returned books to the render as an argument heres
-    res.render('all_books', { books }); // Shorthand. Otherwise could be {books:books}
+    res.render('books/all_books', { books }); // Shorthand. Otherwise could be {books:books}
   });
 });
 
 // GET new book form
 router.get('/books/newbook', (req, res) => {
-  res.render('new_book');
+  res.render('books/new_book');
 });
 
 
@@ -48,7 +48,7 @@ router.get('/books/overduebooks', (req, res) => {
       { model: Books },
     ],
   }).then((overdueBooks) => {
-    res.render('overdue_books', { overdueBooks });
+    res.render('books/overdue_books', { overdueBooks });
   });
 });
 
@@ -63,7 +63,7 @@ router.get('/books/checkedbooks', (req, res) => {
       { model: Books },
     ],
   }).then((checkedBooks) => {
-    res.render('checked_books', { checkedBooks });
+    res.render('books/checked_books', { checkedBooks });
   });
 });
 
@@ -71,10 +71,22 @@ router.get('/books/checkedbooks', (req, res) => {
 // GET Individual Book Detail
 router.get('/books/:id', (req, res) => {
   Books.findById(req.params.id).then((bookDetail) => {
-    res.render('book_detail', { bookDetail });
+    Loans.findAll({
+      where: {
+        book_id: req.params.id,
+      },
+      include: [
+        { model: Books },
+        { model: Patrons },
+      ],
+    }).then((loanHistory) => {
+      res.render('books/book_detail', { bookDetail, loanHistory });
+    });
   });
 });
 
+// Return Book
+// res.render('books/return_book')
 
 // POST Update Book Detail
 router.post('/books/:id', (req, res) => {

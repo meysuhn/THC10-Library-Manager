@@ -1,8 +1,8 @@
-extends layout
+extends ../layout
 
 block content
-    h1 Overdue Books
-    include includes/books_nav.pug
+    h1 Checked Out Books
+    include ../includes/books_nav.pug
     table
       thead
         tr
@@ -11,12 +11,11 @@ block content
           th Genre
           th Year Released
       tbody
-        each book in overdueBooks
+        each book in checkedBooks
           tr
             td
               a(href=`/books/${book.id}`)=book.Book.title
             td=book.Book.author
             td=book.Book.genre
             td=book.Book.first_published
-      
-      
+//- Must be a capital letter & singular on the 'included model'

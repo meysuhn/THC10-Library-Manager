@@ -1,13 +1,13 @@
-extends layout
+extends ../layout
 
 block content
     h1 New Book
-    
+
     form(method='post', action='/newbook')
       p
         label(for='title') Title
         input#title(type='text', name='title', value=title)
-        
+
       p
         label(for='author') Author
         input#author(type='text' name='author', value=author)
