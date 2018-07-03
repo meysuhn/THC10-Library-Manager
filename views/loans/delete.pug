@@ -1,0 +1,48 @@
+extends ../layout
+
+block content
+    h1 Delete Loan
+    
+    p 
+      strong Are you sure you wish to delete this loan record? This action is irreversible. Click cancel to return to the previous screen.
+    
+    a.button(href='/loans') Cancel and Return to 'All Loans'
+    //- NOTE How to get these on same line?
+    span     
+    a.button(class='delete' type='submit', value='I\'m sure, please Delete') I'm sure, please Delete
+    //- Span element just to put whitespace between button. Maybe there's a better solution?
+    
+    //- form(method='post' action=`/loans/${loanDetail.Book.id}/delete`)
+    //-   p
+    //-     input(type='submit', value='I\'m sure, please Delete')
+        //- This needs to be red!
+        
+    //- form(method='post' action=`/loans/${loanDetail.Book.id}/return`)
+    //-   p
+    //-     label(for='returned_on') Returned on:
+    //-     input#returned_on(type='text', name="returned_on" value=todaysDate)
+    //-   p
+    //-     input(type='submit', value='Return Book')
+    
+              
+              
+            
+    p
+      strong Book Title:
+      |  #{loanDetail.Book.title}
+    p
+      strong Loaned By:
+      |  #{loanDetail.Patron.first_name} #{loanDetail.Patron.last_name}
+    p
+      strong Loaned On:
+      |  #{loanDetail.loaned_on}
+    p
+      strong Return By:
+      |  #{loanDetail.return_by}  
+    p
+      strong Returned On:
+      if loanDetail.returned_on
+        |  #{loanDetail.returned_on}
+      else
+        |  This book has not yet been returned.
+    

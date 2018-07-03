@@ -4,9 +4,12 @@ const express = require('express');
 
 // Require Books, Loans and Patrons Models in this routes file
 // This allows us also to use the ORM methods here such as find() etc
-const Books = require("../models").Books;
-const Loans = require("../models").Loans;
-const Patrons = require("../models").Patrons;
+
+// This is Object Destructuring Syntax
+const { Books, Loans, Patrons } = require('../models');
+// const Books = require('../models').Books;
+// const Loans = require('../models').Loans;
+// const Patrons = require('../models').Patrons;
 
 const router = express.Router();
 

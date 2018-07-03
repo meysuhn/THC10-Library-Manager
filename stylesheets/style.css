@@ -92,3 +92,13 @@ input {
 input[type=text], select {
   margin-left: 10px;
 }
+
+.error {
+  color: red;
+  font-weight: bold;
+  padding-left: 20px;
+}
+
+.error-input {
+  border-color: red;
+}

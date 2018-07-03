@@ -10,8 +10,9 @@ block content
           th Patron
           th Loaned on
           th Return by
-          th Returned on
-          th Action
+          th Status
+          th Return Book
+          th Delete Entry
       tbody
           each loan in loans
               tr
@@ -22,8 +23,26 @@ block content
                 td=loan.loaned_on
                 td=loan.return_by
                 td
+                  if loan.returned_on
+                    =`Returned` + ` ` + `(` + loan.returned_on + `)`
+                  else
+                    p With Patron
+                      if loan.return_by < todaysDate
+                        p Overdue     
+                        //- NOTE this needs to be tidied up     
                 td
-                  a.button(href='return_book') Return Book
+                  if loan.returned_on
+                    p Returned
+                  else
+                    a.button(href=`/loans/${loan.id}/return`) Return
+                td
+                  a.button(class='delete' href=`/loans/${loan.id}/delete`) Delete
+                  
+                  //- h2 Loan History
+                  //- if loanHistory.length > 0
+                  //-     include ../includes/loan_history.pug
+                  //- else 
+                  //-   p There is no Loan History for #{patronDetail.first_name} #{patronDetail.last_name}
 
 
   

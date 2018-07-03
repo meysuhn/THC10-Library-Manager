@@ -2,9 +2,12 @@ const express = require('express');
 
 // Require Books, Loans and Patrons Models in this routes file
 // This allows us also to use the ORM methods here such as find() etc
-const Books = require("../models").Books;
-const Loans = require("../models").Loans;
-const Patrons = require("../models").Patrons;
+
+// This is Object Destructuring Syntax
+const { Books, Loans, Patrons } = require('../models');
+// const Books = require('../models').Books;
+// const Loans = require('../models').Loans;
+// const Patrons = require('../models').Patrons;
 const moment = require('moment');
 
 
@@ -25,11 +28,39 @@ router.get('/books/newbook', (req, res) => {
   res.render('books/new_book');
 });
 
+// NOTE This is a bit messy and should be cleaned up.
+let myerrors = {};
 
 // Add New Book
 router.post('/newbook', (req, res) => {
   Books.create(req.body).then(() => { // Call the create ORM method on the Books model
     res.redirect('/books');
+  }).catch((error) => {
+    const errorMessages = {}; // reset object else previous errors will persist on the object.
+    myerrors = {}; // reset object else previous errors will persist on the object.
+    myerrors = error.errors;
+
+    if (error.name === 'SequelizeValidationError') {
+      console.log('If fired');
+      for (let i = 0; i < myerrors.length; i += 1) {
+        if (myerrors[i].path === 'title') {
+          errorMessages.title = myerrors[i].message;
+        } else if (error.errors[i].path === 'author') {
+          errorMessages.author = myerrors[i].message;
+        } else if (error.errors[i].path === 'genre') {
+          errorMessages.genre = myerrors[i].message;
+        } else if (error.errors[i].path === 'first_published') {
+          errorMessages.first_published = myerrors[i].message;
+        }
+      }
+      res.render('books/new_book', {
+        title: req.body.title,
+        author: req.body.author,
+        genre: req.body.genre,
+        first_published: req.body.first_published,
+        errorMessages,
+      });
+    }
   });
 });
 
@@ -80,13 +111,18 @@ router.get('/books/:id', (req, res) => {
         { model: Patrons },
       ],
     }).then((loanHistory) => {
-      res.render('books/book_detail', { bookDetail, loanHistory });
+      if (bookDetail) {
+        res.render('books/book_detail', { bookDetail, loanHistory });
+      } else {
+        res.send(404);
+        // This will fire if there's any problem with Books.findById
+      }
+    }).catch((err) => {
+      // NOTE This will fire only if something happens with Loans.findAll
     });
   });
 });
 
-// Return Book
-// res.render('books/return_book')
 
 // POST Update Book Detail
 router.post('/books/:id', (req, res) => {
@@ -99,3 +135,13 @@ router.post('/books/:id', (req, res) => {
 });
 
 module.exports = router;
+
+
+// console.log("My Errors Below");
+// console.log(myerrors);
+// console.log(myerrors.length);
+// console.log("2nd if fired");
+// console.log("errorMessages Below");
+// console.log(errorMessages);
+// console.log("req.body Below");
+// console.log(req.body);
