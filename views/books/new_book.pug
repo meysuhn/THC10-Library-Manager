@@ -9,7 +9,7 @@ block content
       p title on req.body is accessible and equals: #{title}
     else
       p no req.body title to display
-    if errorMessages.title
+    if errorMessages
       p errorMessages.title is accessible and equals: #{errorMessages.title}
     else 
       p no errorMessages.title to display
@@ -22,10 +22,10 @@ block content
       p
         label(for='title') Title
         if errorMessages
-          input#title(class='error-input' type='text' name='title')
+          input(class='error-input' type='text' name='title')
           span(class='error')=errorMessages.title
         else if title
-          input#title(type='text', name='title', value=title)
+          input(type='text', name='title', value=title)
         else
           input#title(type='text', name='title', placeholder='enter a title')
 

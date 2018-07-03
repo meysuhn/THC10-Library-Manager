@@ -32,7 +32,8 @@ block content
                         //- NOTE this needs to be tidied up     
                 td
                   if loan.returned_on
-                    p Returned
+                    a.button#returned(href='loans/new') Reloan
+                    
                   else
                     a.button(href=`/loans/${loan.id}/return`) Return
                 td

@@ -12,12 +12,11 @@ a {
 
 body {
   padding: 50px;
-  font: 18px "Garamond", serif;
+  font: 18px "Helvetica", serif;
 }
 a {
   color: #019875;
   text-decoration: none;
-  font-weight: bold;
 }
   a:hover {
     color: black;
@@ -25,7 +24,7 @@ a {
 a.button, input[type=submit] {
   color: white;
   background: #019875;
-  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica", Helvetica, Arial, sans-serif;
   padding: 10px 14px 12px;
   font-size: 14px;
   border-radius: 2px;
@@ -93,12 +92,17 @@ tr .delete {
     background-color: red;
   }
 
-a .button, .delete, input[type=submit] {
+
+#delete {
   background-color: darkred;
 }
-  a .button, .delete:hover {
-    background-color: red;
+  #delete:hover {
+    background-color: hotpink;
   }
+
+#returned {
+  background-color: lightgreen;
+}
 /*  */
 
 tr:nth-child(2n) {
@@ -125,10 +129,10 @@ input[type=text], select {
 
 .error {
   color: darkred;
-  font-weight: bold;
   padding-left: 20px;
 }
 
 .error-input {
+  border: solid;
   border-color: darkred;
 }
