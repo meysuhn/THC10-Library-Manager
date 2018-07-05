@@ -13,7 +13,10 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     library_id: DataTypes.STRING,
     zip_code: DataTypes.STRING
-  }, {});
+  }, {
+    timestamps: false,
+    underscored: true
+  });
   Patrons.associate = function(models) {
     // associations can be defined here
     //Patrons.hasMany(models.Loans);

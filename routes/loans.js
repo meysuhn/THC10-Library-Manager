@@ -1,15 +1,7 @@
-// this file is all me.
-
 const express = require('express');
-
+const { Books, Loans, Patrons } = require('../models'); // This is Object Destructuring Syntax
 // Require Books, Loans and Patrons Models in this routes file
 // This allows us also to use the ORM methods here such as find() etc
-
-// This is Object Destructuring Syntax
-const { Books, Loans, Patrons } = require('../models');
-// const Books = require('../models').Books;
-// const Loans = require('../models').Loans;
-// const Patrons = require('../models').Patrons;
 const moment = require('moment');
 
 const router = express.Router();
@@ -54,17 +46,49 @@ router.get('/loans/checkedloans', (req, res) => {
 router.get('/loans/new', (req, res) => {
   const newLoanDate = getDate();
   const returnDate = getDate7DaysFromNow();
-  Books.findAll().then((availableBooks) => {
-    // WHERE returned_on != null ?? Try this.
-    // NOTE Need to amend this to remove books that are already loaned out.
-    Patrons.findAll().then((patrons) => {
+  const allBooks = Books.findAll();
+  const allLoans = Loans.findAll({
+    where: {
+      returned_on: null,
+    },
+  });
+  const allPatrons = Patrons.findAll();
+
+  Promise.all([allBooks, allLoans, allPatrons])
+  // Ensure all findAlls have completed before next step.
+    .then((allModelData) => {
+      const availableBooks = []; // array to contain id of each available book
+      const unavailableBooks = []; // array containing id of each loaned (unavailable) book
+
+      // Separate out each model to its own variable
+      const books = allModelData[0];
+      const loans = allModelData[1];
+      const patrons = allModelData[2];
+
+      // Loop over each loan record and keep only its book.id
+      loans.forEach((loan) => {
+        unavailableBooks.push(loan.book_id);
+      });
+
+      // Loop over each book
+      // (1) if unavailableBooks[] has a matching id in its array the index is returned
+      // the returned index will have to be at least 0
+      // thus <0 results in that id not being pushed to availableBooks[]
+      // (2) if book.id not present then booked is not loaned out
+      // indexOf returns -1 in this case, as it can't find an index with a matching book.id
+      // this available book's id is pushed to availableBooks which is sent to pug.
+
+      books.forEach((book) => {
+        if (unavailableBooks.indexOf(book.id) < 0) {
+          availableBooks.push(book);
+        }
+      });
       res.render('loans/new_loan', {
         availableBooks, patrons, newLoanDate, returnDate,
       });
+    }).catch((err) => {
+      res.send(err); // NOTE this needs wiring up with error.pug
     });
-  }).catch((err) => {
-    res.send(500);
-  });
 });
 
 
@@ -148,13 +172,14 @@ router.get('/loans/:id/delete', (req, res) => {
   });
 });
 
-// NOTE This not working for some reason...
 // POST Delete Loan
 router.post('/loans/:id/delete', (req, res) => {
-  Loans.destroy(req.body, {
-    where: [
-      { book_id: req.params.id },
-    ],
+  console.log('post fired');
+  console.log(req.params.id);
+  Loans.findById(req.params.id).then((loan) => {
+    console.log(loan);
+    return loan.destroy();
+    // console.log('Loans fired');
   }).then(() => {
     res.redirect('/loans');
   });

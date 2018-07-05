@@ -13,7 +13,10 @@ module.exports = (sequelize, DataTypes) => {
     loaned_on: DataTypes.DATE,
     return_by: DataTypes.DATE,
     returned_on: DataTypes.DATE
-  }, {});
+  }, {
+    timestamps: false,
+    underscored: true
+  });
   Loans.associate = function(models) {
     // associations can be defined here
     Loans.belongsTo(models.Books, { foreignKey: "book_id" });

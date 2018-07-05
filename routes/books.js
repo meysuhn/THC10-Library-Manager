@@ -1,20 +1,17 @@
 const express = require('express');
-
+const { Books, Loans, Patrons } = require('../models'); // This is Object Destructuring Syntax
 // Require Books, Loans and Patrons Models in this routes file
 // This allows us also to use the ORM methods here such as find() etc
-
-// This is Object Destructuring Syntax
-const { Books, Loans, Patrons } = require('../models');
 // const Books = require('../models').Books;
 // const Loans = require('../models').Loans;
 // const Patrons = require('../models').Patrons;
 const moment = require('moment');
-
-
+// const search = require('../public/javascripts/search');
 const router = express.Router();
 
 // Get current date in specified format.
 const getDate = () => moment().format().toString().substring(0, 10);
+
 
 // BOOK ROUTES //
 router.get('/books', (req, res) => {
@@ -118,8 +115,16 @@ router.get('/books/:id', (req, res) => {
         // This will fire if there's any problem with Books.findById
       }
     }).catch((err) => {
+      // catch method handles the promise if it's rejected
+      console.log(err.message);
+      res.sendStatus(500);
       // NOTE This will fire only if something happens with Loans.findAll
     });
+  }).catch((Error) => {
+    console.log(Error);
+    res.render('error', { Error });
+    // if you don't render to an error page then the error will just hang.
+    // Rendering to an error page keeps things tidy.
   });
 });
 
@@ -134,14 +139,32 @@ router.post('/books/:id', (req, res) => {
   });
 });
 
+// GET Delete Book
+router.get('/books/:id/delete', (req, res) => {
+// NOTE Need to reject delete if book is checked out.
+  Books.findById(req.params.id, {
+    include: [
+      {
+        model: Loans,
+      },
+    ],
+  }).then((bookToDelete) => {
+    res.render('books/delete', { bookToDelete });
+  });
+});
+
+// // POST Delete Loan
+// router.post('/loans/:id/delete', (req, res) => {
+//   console.log('post fired');
+//   console.log(req.params.id);
+//   Loans.findById(req.params.id).then((loan) => {
+//     console.log(loan);
+//     return loan.destroy();
+//     // console.log('Loans fired');
+//   }).then(() => {
+//     res.redirect('/loans');
+//   });
+// });
+
+
 module.exports = router;
-
-
-// console.log("My Errors Below");
-// console.log(myerrors);
-// console.log(myerrors.length);
-// console.log("2nd if fired");
-// console.log("errorMessages Below");
-// console.log(errorMessages);
-// console.log("req.body Below");
-// console.log(req.body);

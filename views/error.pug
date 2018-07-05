@@ -1,22 +1,22 @@
 extends layout
 
 block content
-    h1 New Book (this is error.pug that's rendering). The route for this is in app.js
-    form
-      h2.error Oooops!
-      ul.error
-        li Error message goes here
-      p
-        label(for='title') Title
-        input#title(type='text')
-      p
-        label(for='author') Author
-        input#author(type='text')
-      p
-        label(for='genre') Genre
-        input#genre(type='text')
-      p
-        label(for='first_published') First Published
-        input#first_published(type='text')
-      p
-        input(type='submit', value='Create New Book')
+
+ if Error.status = 400
+   
+ p The page you have requested does not exist.
+ p #{Error.message}
+ p #{Error.name}
+
+  
+ if Error.status = 500  
+   
+ p The page you have requested is not available
+ 
+ a.button(href='/') Home
+ p
+   a.button(href='/books') Return to 'All Books'
+   span          
+   a.button(href='/loans') Return to 'All Loans'
+   span          
+   a.button(href='/patrons') Return to 'All Patrons'

@@ -97,11 +97,11 @@ tr .delete {
   background-color: darkred;
 }
   #delete:hover {
-    background-color: hotpink;
+    background-color: darkred;
   }
 
 #returned {
-  background-color: lightgreen;
+  background-color: darkgreen;
 }
 /*  */
 
@@ -135,4 +135,12 @@ input[type=text], select {
 .error-input {
   border: solid;
   border-color: darkred;
+}
+
+#overdue {
+  color: red;
+}
+
+#loaned {
+  color: darkgreen;
 }

@@ -1,18 +1,12 @@
-// this file is all me.
 
 const express = require('express');
-
-// Require Books, Loans and Patrons Models in this routes file
-// This allows us also to use the ORM methods here such as find() etc
-
-// This is Object Destructuring Syntax
-const { Books, Loans, Patrons } = require('../models');
+const { Books, Loans, Patrons } = require('../models'); // Object Destructuring Syntax
 // const Books = require('../models').Books;
 // const Loans = require('../models').Loans;
 // const Patrons = require('../models').Patrons;
-
+// Require Books, Loans and Patrons Models in this routes file
+// This allows us also to use the ORM methods here such as find() etc
 const router = express.Router();
-
 
 // GET new patron form
 router.get('/patrons/newpatron', (req, res) => {
@@ -26,8 +20,7 @@ router.post('/newpatron', (req, res) => {
   });
 });
 
-
-// List All Patrons
+// Get All Patrons
 router.get('/patrons', (req, res) => {
   Patrons.findAll().then((patrons) => {
     res.render('patrons/all_patrons', { patrons });
@@ -61,4 +54,4 @@ router.post('/patrons/:id', (req, res) => {
   });
 });
 
-module.exports = router; // NOTE add the module to router middleware object?
+module.exports = router;
