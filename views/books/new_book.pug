@@ -9,7 +9,7 @@ block content
     form(method='post', action='/newbook')
       p
         label(for='title') Title
-        if errorMessages
+        if errorMessages.title
           input(class='error-input' type='text' name='title')
           span(class='error')=errorMessages.title
         else if title
@@ -19,7 +19,7 @@ block content
 
       p
         label(for='author') Author
-        if errorMessages
+        if errorMessages.author
           input#author(class='error-input' type='text' name='author')
           span(class='error')=errorMessages.author
         else if author
@@ -29,16 +29,17 @@ block content
       
       p
         label(for='genre') Genre
-        if errorMessages
+        if errorMessages.genre
           input#genre(class='error-input' type='text' name='genre')
           span(class='error')=errorMessages.genre
         else if genre
           input#genre(type='text' name='genre', value=genre)
         else 
           input#genre(type='text' name='genre', placeholder='enter the genre')
+      
       p
         label(for='first_published') First Published
-        if errorMessages
+        if errorMessages.first_published
           input#first_published(class='error-input' type='text' name='first_published')
           span(class='error')=errorMessages.first_published
         else if first_published
