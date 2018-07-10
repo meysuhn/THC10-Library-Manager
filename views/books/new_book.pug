@@ -2,18 +2,6 @@ extends ../layout
 
 block content
     h1 New Book
-   
-    //- ///////////////////////////////////////////////
-    //- Temporary just to make sure required objects are accessible.
-    if title 
-      p title on req.body is accessible and equals: #{title}
-    else
-      p no req.body title to display
-    if errorMessages
-      p errorMessages.title is accessible and equals: #{errorMessages.title}
-    else 
-      p no errorMessages.title to display
-    //- ///////////////////////////////////////////////
 
     //- (1) if error then display error
     //- (2) else if there is a value then reuse it
@@ -25,7 +13,7 @@ block content
           input(class='error-input' type='text' name='title')
           span(class='error')=errorMessages.title
         else if title
-          input(type='text', name='title', value=title)
+          input#title(type='text', name='title', value=title)
         else
           input#title(type='text', name='title', placeholder='enter a title')
 
@@ -59,3 +47,15 @@ block content
           input#first_published(type='text' name='first_published', placeholder='YYYY')
       p
         input(type='submit', value='Create New Book')
+          
+      //-/////////////////////////////////////////////
+      //- Temporary just to make sure required objects are accessible.
+      //- if title 
+      //-   p title on req.body is accessible and equals: #{title}
+      //- else
+      //-   p no req.body title to display
+      //- if errorMessages
+      //-   p errorMessages.title is accessible and equals: #{errorMessages.title}
+      //- else 
+      //-   p no errorMessages.title to display
+      //-/////////////////////////////////////////////
