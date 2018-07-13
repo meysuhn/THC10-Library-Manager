@@ -1,11 +1,16 @@
 extends ../layout
 
 block content
-    h1 Patron: #{patronDetail.first_name} #{patronDetail.last_name}
+    //- h1 Patron: #{patronDetail.first_name} #{patronDetail.last_name}
+    //- NOTE Fix the above later
     form(action="/patrons/" + patronDetail.id + "?_method=PUT", method="post")
       p
         label(for='first_name') First Name
-        input#first_name(type='text', name="first_name" value=patronDetail.first_name)
+        if errorMessages
+          input(class='error-input' type='text' name='first_name')
+          span(class='error')=errorMessages.first_name
+        else 
+          input#first_name(type='text', name="first_name" value=patronDetail.first_name)
       p
         label(for='last_name') Last Name
         input#last_name(type='text', name="last_name" value=patronDetail.last_name)

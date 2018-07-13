@@ -131,7 +131,6 @@ router.post('/loans/new', (req, res) => {
         return_by: req.body.return_by,
         returned_on: req.body.returned_on,
         errorMessages,
-        patrons,
       });
     }
   });
