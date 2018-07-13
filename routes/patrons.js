@@ -9,14 +9,49 @@ const { Books, Loans, Patrons } = require('../models'); // Object Destructuring 
 const router = express.Router();
 
 // GET new patron form
-router.get('/patrons/newpatron', (req, res) => {
+router.get('/patrons/new', (req, res) => {
   res.render('patrons/new_patron');
 });
 
+// NOTE This is a bit messy and should be cleaned up.
+let myerrors = {};
+
 // Add New Patron
-router.post('/newpatron', (req, res) => {
+router.post('/patrons/new', (req, res) => {
   Patrons.create(req.body).then(() => { // Call the create ORM method on the Books model
     res.redirect('/patrons');
+  }).catch((error) => {
+    const errorMessages = {}; // reset object else previous errors will persist on the object.
+    myerrors = {}; // reset object else previous errors will persist on the object.
+    myerrors = error.errors;
+
+    if (error.name === 'SequelizeValidationError') {
+      console.log('If fired');
+      for (let i = 0; i < myerrors.length; i += 1) {
+        if (myerrors[i].path === 'first_name') {
+          errorMessages.first_name = myerrors[i].message;
+        } else if (error.errors[i].path === 'last_name') {
+          errorMessages.last_name = myerrors[i].message;
+        } else if (error.errors[i].path === 'address') {
+          errorMessages.address = myerrors[i].message;
+        } else if (error.errors[i].path === 'email') {
+          errorMessages.email = myerrors[i].message;
+        } else if (error.errors[i].path === 'library_id') {
+          errorMessages.library_id = myerrors[i].message;
+        } else if (error.errors[i].path === 'zip_code') {
+          errorMessages.zip_code = myerrors[i].message;
+        }
+      }
+      res.render('patrons/new_patron', {
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        address: req.body.address,
+        email: req.body.email,
+        library_id: req.body.library_id,
+        zip_code: req.body.zip_code,
+        errorMessages,
+      });
+    }
   });
 });
 

@@ -5,16 +5,50 @@ block content
     form(action="/books/" + bookDetail.id + "?_method=PUT", method="post")
       p
         label(for='title') Title
-        input#title(type='text', name="title" value=bookDetail.title)
+        if errorMessages
+          if errorMessages.title
+            input(class='error-input' type='text' name='title')
+            span(class='error')=errorMessages.title
+        else
+          input#title(type='text', name='title', value=bookDetail.title)
       p
         label(for='author') Author
-        input#author(type='text', name="author" value=bookDetail.author)
+        if errorMessages
+          if errorMessages.author
+            input#author(class='error-input' type='text' name='author')
+            span(class='error')=errorMessages.author
+        else
+          input#author(type='text' name='author', value=bookDetail.author)
+        
       p
         label(for='genre') Genre
-        input#genre(type='text', name="genre" value=bookDetail.genre)
+        if errorMessages
+          if errorMessages.genre
+            input#genre(class='error-input' type='text' name='genre')
+            span(class='error')=errorMessages.genre
+        else
+          input#genre(type='text' name='genre', value=bookDetail.genre)
+        
       p
         label(for='first_published') First Published
-        input#first_published(type='text', name="first_published" value=bookDetail.first_published)
+        if errorMessages
+          if errorMessages.first_published
+            input#first_published(class='error-input' type='text' name='first_published')
+            span(class='error')=errorMessages.first_published
+        else
+          input#first_published(type='text' name='first_published', value=bookDetail.first_published)
+      //- p
+      //-   label(for='title') Title
+      //-   input#title(type='text', name="title" value=bookDetail.title)
+      //- p
+      //-   label(for='author') Author
+      //-   input#author(type='text', name="author" value=bookDetail.author)
+      //- p
+      //-   label(for='genre') Genre
+      //-   input#genre(type='text', name="genre" value=bookDetail.genre)
+      //- p
+      //-   label(for='first_published') First Published
+      //-   input#first_published(type='text', name="first_published" value=bookDetail.first_published)
       p
         input(type='submit', value='Update')
     h2 Loan History
@@ -22,3 +56,6 @@ block content
         include ../includes/loan_history.pug
     else 
       p There is no Loan History for #{bookDetail.title}
+      
+      
+      

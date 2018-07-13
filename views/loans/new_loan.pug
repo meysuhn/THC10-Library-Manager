@@ -2,24 +2,68 @@ extends ../layout
 
 block content
     h1 New Loan
-    form(method='post', action='/new')
+    form(method='post', action='/loans/new')
+      //- p
+      //-   label(for='book_id') Book
+      //-   select#book_id(name='book_id')
+      //-     each book in availableBooks
+      //-       option(value=book.id)=book.title
+      //- 
+      //- p
+      //-   label(for='patron_id') Patron
+      //-   select#patron_id(name='patron_id')
+      //-     each patron in patrons
+      //-       option(value=patron.id)=patron.first_name + ' ' + patron.last_name + ' ' + "(" + patron.library_id + ")"
+      //- 
+      //- p
+      //-   label(for='loaned_on') Loaned on:
+      //-   input#loaned_on(type='text', name='loaned_on' value=newLoanDate)
+      //- p
+      //-   label(for='return_by') Return by:
+      //-   input#return_by(type='text', name='return_by' value=returnDate)
+      //- p
+      //-   input(type='submit', value='Create New Loan')
+
       p
         label(for='book_id') Book
-        select#book_id(name='book_id')
-          each book in availableBooks
-            option(value=book.id)=book.title
+        if errorMessages
+          select#book_id(name='book_id')
+              option(value=book_id)
+        else 
+          select#book_id(name='book_id')
+            each book in availableBooks
+              option(value=book.id)=book.title
       
       p
         label(for='patron_id') Patron
-        select#patron_id(name='patron_id')
-          each patron in patrons
-            option(value=patron.id)=patron.first_name + ' ' + patron.last_name + ' ' + "(" + patron.library_id + ")"
-      
+        if errorMessages
+          select#patron_id(name='patron_id')
+              option(value=patron_id)
+        else 
+          select#patron_id(name='patron_id')
+            each patron in patrons
+              option(value=patron.id)=patron.first_name + ' ' + patron.last_name + ' ' + "(" + patron.library_id + ")"
+              
       p
         label(for='loaned_on') Loaned on:
-        input#loaned_on(type='text', name='loaned_on' value=newLoanDate)
+        if errorMessages
+          if errorMessages.loaned_on
+            input(class='error-input' type='text' name='loaned_on')
+            span(class='error')=errorMessages.loaned_on
+          else if loaned_on
+            input#loaned_on(type='text', name='loaned_on', value=loaned_on)
+        else
+          input#loaned_on(type='text', name='loaned_on' value=newLoanDate)
+      
       p
         label(for='return_by') Return by:
-        input#return_by(type='text', name='return_by' value=returnDate)
+        if errorMessages
+          if errorMessages.return_by
+            input(class='error-input' type='text' name='return_by')
+            span(class='error')=errorMessages.return_by
+          else if return_by
+            input#return_by(type='text', name='return_by', value=return_by)
+        else
+          input#return_by(type='text', name='return_by' value=returnDate)
       p
         input(type='submit', value='Create New Loan')

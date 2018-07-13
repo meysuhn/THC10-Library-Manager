@@ -6,44 +6,48 @@ block content
     //- (1) if error then display error
     //- (2) else if there is a value then reuse it
     //- (3) else (this for onload) load no value just a placeholder.
-    form(method='post', action='/newbook')
+    form(method='post', action='/books/new')
       p
         label(for='title') Title
-        if errorMessages.title
-          input(class='error-input' type='text' name='title')
-          span(class='error')=errorMessages.title
-        else if title
-          input#title(type='text', name='title', value=title)
+        if errorMessages
+          if errorMessages.title
+            input(class='error-input' type='text' name='title')
+            span(class='error')=errorMessages.title
+          else if title
+            input#title(type='text', name='title', value=title)
         else
           input#title(type='text', name='title', placeholder='enter a title')
-
+          //- Others will fail out because errorMessages is sending them down that route.
       p
         label(for='author') Author
-        if errorMessages.author
-          input#author(class='error-input' type='text' name='author')
-          span(class='error')=errorMessages.author
-        else if author
-          input#author(type='text' name='author', value=author)
+        if errorMessages
+          if errorMessages.author
+            input#author(class='error-input' type='text' name='author')
+            span(class='error')=errorMessages.author
+          else if author
+            input#author(type='text' name='author', value=author)
         else
           input#author(type='text' name='author', placeholder='enter the author name')
       
       p
         label(for='genre') Genre
-        if errorMessages.genre
-          input#genre(class='error-input' type='text' name='genre')
-          span(class='error')=errorMessages.genre
-        else if genre
-          input#genre(type='text' name='genre', value=genre)
+        if errorMessages
+          if errorMessages.genre
+            input#genre(class='error-input' type='text' name='genre')
+            span(class='error')=errorMessages.genre
+          else if genre
+            input#genre(type='text' name='genre', value=genre)
         else 
           input#genre(type='text' name='genre', placeholder='enter the genre')
       
       p
         label(for='first_published') First Published
-        if errorMessages.first_published
-          input#first_published(class='error-input' type='text' name='first_published')
-          span(class='error')=errorMessages.first_published
-        else if first_published
-          input#first_published(type='text' name='first_published', value='first_published')
+        if errorMessages
+          if errorMessages.first_published
+            input#first_published(class='error-input' type='text' name='first_published')
+            span(class='error')=errorMessages.first_published
+          else if first_published
+            input#first_published(type='text' name='first_published', value=first_published)
         else
           input#first_published(type='text' name='first_published', placeholder='YYYY')
       p

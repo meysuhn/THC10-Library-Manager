@@ -13,7 +13,7 @@ const router = express.Router();
 const getDate = () => moment().format().toString().substring(0, 10);
 
 
-// BOOK ROUTES //
+// GET ALL BOOKS //
 router.get('/books', (req, res) => {
   Books.findAll().then((books) => { // Pass the returned books to the render as an argument heres
     res.render('books/all_books', { books }); // Shorthand. Otherwise could be {books:books}
@@ -21,15 +21,15 @@ router.get('/books', (req, res) => {
 });
 
 // GET new book form
-router.get('/books/newbook', (req, res) => {
+router.get('/books/new', (req, res) => {
   res.render('books/new_book');
 });
 
 // NOTE This is a bit messy and should be cleaned up.
 let myerrors = {};
 
-// Add New Book
-router.post('/newbook', (req, res) => {
+// POST New Book
+router.post('/books/new', (req, res) => {
   Books.create(req.body).then(() => { // Call the create ORM method on the Books model
     res.redirect('/books');
   }).catch((error) => {
@@ -120,12 +120,40 @@ router.get('/books/:id', (req, res) => {
       res.sendStatus(500);
       // NOTE This will fire only if something happens with Loans.findAll
     });
-  }).catch((Error) => {
-    console.log(Error);
-    res.render('error', { Error });
-    // if you don't render to an error page then the error will just hang.
-    // Rendering to an error page keeps things tidy.
+  }).catch((error) => {
+    const errorMessages = {}; // reset object else previous errors will persist on the object.
+    myerrors = {}; // reset object else previous errors will persist on the object.
+    myerrors = error.errors;
+
+    if (error.name === 'SequelizeValidationError') {
+      console.log('If fired');
+      for (let i = 0; i < myerrors.length; i += 1) {
+        if (myerrors[i].path === 'title') {
+          errorMessages.title = myerrors[i].message;
+        } else if (error.errors[i].path === 'author') {
+          errorMessages.author = myerrors[i].message;
+        } else if (error.errors[i].path === 'genre') {
+          errorMessages.genre = myerrors[i].message;
+        } else if (error.errors[i].path === 'first_published') {
+          errorMessages.first_published = myerrors[i].message;
+        }
+      }
+      res.render('books/book_detail', {
+        title: req.body.title,
+        author: req.body.author,
+        genre: req.body.genre,
+        first_published: req.body.first_published,
+        errorMessages,
+      });
+    }
   });
+
+  // .catch((Error) => {
+  //   console.log(Error);
+  //   res.render('error', { Error });
+  //   // if you don't render to an error page then the error will just hang.
+  //   // Rendering to an error page keeps things tidy.
+  // });
 });
 
 

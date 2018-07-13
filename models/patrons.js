@@ -7,12 +7,54 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    address: DataTypes.STRING,
-    email: DataTypes.STRING,
-    library_id: DataTypes.STRING,
-    zip_code: DataTypes.STRING
+    first_name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: "First Name is a required field"
+        }
+      }
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: "Last Name is a required field"
+        }
+      }
+    },
+    address: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: "Address is a required field"
+        }
+      }
+    },
+    email: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: "Email is a required field"
+        }
+      }
+    },
+    library_id: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: "Library ID is a required field"
+        }
+      }
+    },
+    zip_code: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: "Zip Code is a required field"
+        }
+      }
+    },
   }, {
     timestamps: false,
     underscored: true

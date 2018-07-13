@@ -2,24 +2,66 @@ extends ../layout
 
 block content
     h1 New Patron
-    form(method='post', action='/newpatron')
+    form(method='post', action='/patrons/new')
       p
         label(for='first_name') First Name
-        input#first_name(type='text', name='first_name', value=first_name)
+        if errorMessages
+          if errorMessages.first_name
+            input(class='error-input' type='text' name='first_name')
+            span(class='error')=errorMessages.first_name
+          else if first_name
+            input#first_name(type='text', name='first_name', value=first_name)
+        else
+          input#first_name(type='text', name='first_name', placeholder='enter a first name')
       p
         label(for='last_name') Last Name
-        input#last_name(type='text', name='last_name', value=last_name)
+        if errorMessages
+          if errorMessages.last_name
+            input(class='error-input' type='text' name='last_name')
+            span(class='error')=errorMessages.last_name
+          else if last_name
+            input#last_name(type='text', name='last_name', value=last_name)
+        else
+          input#last_name(type='text', name='last_name', placeholder='enter a last name')
       p
-        label(for='address')  Address
-        input#address(type='text', name='address', value=address)
+        label(for='address') Address
+        if errorMessages
+          if errorMessages.address
+            input(class='error-input' type='text' name='address')
+            span(class='error')=errorMessages.address
+          else if address
+            input#address(type='text', name='address', value=address)
+        else
+          input#address(type='text', name='address', placeholder='enter an address')
       p
         label(for='email') Email
-        input#email(type='text', name='email', value=email)
+        if errorMessages
+          if errorMessages.email
+            input(class='error-input' type='text' name='email')
+            span(class='error')=errorMessages.email
+          else if email
+            input#email(type='text', name='email', value=email)
+        else
+          input#email(type='text', name='email', placeholder='enter an email')
       p
         label(for='library_id') Library ID
-        input#library_id(type='text', name='library_id', value=library_id)
+        if errorMessages
+          if errorMessages.library_id
+            input(class='error-input' type='text' name='library_id')
+            span(class='error')=errorMessages.library_id
+          else if library_id
+            input#library_id(type='text', name='library_id', value=library_id)
+        else
+          input#library_id(type='text', name='library_id', placeholder='enter a Library ID')
       p
         label(for='zip_code') Zip Code
-        input#zip_code(type='text', name='zip_code', value=zip_code)
+        if errorMessages
+          if errorMessages.zip_code
+            input(class='error-input' type='text' name='zip_code')
+            span(class='error')=errorMessages.zip_code
+          else if zip_code
+            input#zip_code(type='text', name='zip_code', value=zip_code)
+        else
+          input#zip_code(type='text', name='zip_code', placeholder='enter a zip code')
       p
         input(type='submit', value='Create New Patron')

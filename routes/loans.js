@@ -92,11 +92,48 @@ router.get('/loans/new', (req, res) => {
 });
 
 
+// // POST New Loan
+// router.post('/loans/new', (req, res) => {
+//   Loans.create(req.body).then(() => { // Call the create ORM method on the Loans model
+//     // res.render('new_loan', { newLoanDate, ReturnDate });
+//     res.redirect('/loans');
+//   });
+// });
+
+// NOTE This is a bit messy and should be cleaned up.
+let myerrors = {};
+
 // POST New Loan
-router.post('/new', (req, res) => {
+router.post('/loans/new', (req, res) => {
   Loans.create(req.body).then(() => { // Call the create ORM method on the Loans model
     // res.render('new_loan', { newLoanDate, ReturnDate });
     res.redirect('/loans');
+  }).catch((error) => {
+    const errorMessages = {}; // reset object else previous errors will persist on the object.
+    myerrors = {}; // reset object else previous errors will persist on the object.
+    myerrors = error.errors;
+
+    if (error.name === 'SequelizeValidationError') {
+      console.log('If fired');
+      for (let i = 0; i < myerrors.length; i += 1) {
+        if (myerrors[i].path === 'loaned_on') {
+          errorMessages.loaned_on = myerrors[i].message;
+        } else if (error.errors[i].path === 'return_by') {
+          errorMessages.return_by = myerrors[i].message;
+        } else if (error.errors[i].path === 'returned_on') {
+          errorMessages.returned_on = myerrors[i].message;
+        }
+      }
+      res.render('loans/new_loan', {
+        book_id: req.body.book_id,
+        patron_id: req.body.patron_id,
+        loaned_on: req.body.loaned_on,
+        return_by: req.body.return_by,
+        returned_on: req.body.returned_on,
+        errorMessages,
+        patrons,
+      });
+    }
   });
 });
 
