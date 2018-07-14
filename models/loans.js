@@ -60,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     underscored: true
   });
+  // http://docs.sequelizejs.com/manual/tutorial/models-definition.html#timestamps
   Loans.associate = function(models) {
     // associations can be defined here
     Loans.belongsTo(models.Books, { foreignKey: "book_id" });

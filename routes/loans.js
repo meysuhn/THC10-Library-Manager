@@ -7,10 +7,11 @@ const moment = require('moment');
 const router = express.Router();
 
 // Get current date in specified format.
-const getDate = () => moment().format('YYYY-MM-DD');
+const getDate = () => moment().format('LL');
 
 // Get date 7 days from today.
 const getDate7DaysFromNow = () => moment(new Date().setDate(new Date().getDate() + 7)).format('YYYY-MM-DD');
+
 
 // List All Loans
 router.get('/loans', (req, res) => {
@@ -45,6 +46,7 @@ router.get('/loans/checkedloans', (req, res) => {
 // GET New Loan Page
 router.get('/loans/new', (req, res) => {
   const newLoanDate = getDate();
+  console.log(newLoanDate);
   const returnDate = getDate7DaysFromNow();
   const allBooks = Books.findAll();
   const allLoans = Loans.findAll({
