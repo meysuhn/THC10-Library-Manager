@@ -67,11 +67,10 @@ router.post('/patrons/:id', (req, res) => {
   Patrons.findById(req.params.id)
     .then((patronDetail) => {
       patronDetail.update(req.body); // update method returns a promise
-    // NOTE problem must be around here, the way I'm passing data in? Write a more informed question.
     }).then(() => {
       res.redirect('/patrons');
       console.log('Error hasnt been caught');
-    // NOTE this will fire even if there's a validation error. Here's the start of the problem.
+    // NOTE this will fire even if there's a validation error, even though a validation error is registering in the terminal
 
     }).catch((error) => {
       errorFunction(error, errorMessages);
