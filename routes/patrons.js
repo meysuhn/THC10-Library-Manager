@@ -38,7 +38,7 @@ const errorFunction = (error, errorMessages) => {
   // (2) the values are being added to the addValidationErrorMessages object, not errorMessages
 };
 
-// Add New Patron
+// POST New Patron
 router.post('/patrons/new', (req, res) => {
   const errorMessages = {}; // reset object else previous errors will persist on the object.
 
@@ -60,40 +60,6 @@ router.post('/patrons/new', (req, res) => {
 });
 
 
-// POST Update Patron Detail
-router.post('/patrons/:id', (req, res) => {
-  const errorMessages = {}; // reset object else previous errors will persist on the object.
-
-  Patrons.findById(req.params.id)
-    .then((patronDetail) => {
-      patronDetail.update(req.body); // update method returns a promise
-    }).then(() => {
-      res.redirect('/patrons');
-      console.log('Error hasnt been caught');
-    // NOTE this will fire even if there's a validation error, even though a validation error is registering in the terminal
-
-    }).catch((error) => {
-      errorFunction(error, errorMessages);
-      console.log(errorMessages);
-      res.render('patrons/patron_detail', {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        address: req.body.address,
-        email: req.body.email,
-        library_id: req.body.library_id,
-        zip_code: req.body.zip_code,
-        errorMessages,
-      });
-    });
-});
-
-// Get All Patrons
-router.get('/patrons', (req, res) => {
-  Patrons.findAll().then((patrons) => {
-    res.render('patrons/all_patrons', { patrons });
-  });
-});
-
 // Get Patron Detail
 router.get('/patrons/:id', (req, res) => {
   Patrons.findById(req.params.id).then((patronDetail) => {
@@ -106,8 +72,69 @@ router.get('/patrons/:id', (req, res) => {
         { model: Patrons },
       ],
     }).then((loanHistory) => {
-      res.render('patrons/patron_detail', { patronDetail, loanHistory });
+      res.render('patrons/patron_detail', {
+        id: patronDetail.id,
+        first_name: patronDetail.first_name,
+        last_name: patronDetail.last_name,
+        address: patronDetail.address,
+        email: patronDetail.email,
+        library_id: patronDetail.library_id,
+        zip_code: patronDetail.zip_code,
+        loanHistory,
+      });
     });
+  });
+});
+
+
+// POST Update Patron Detail
+router.post('/patrons/:id', (req, res) => {
+  const errorMessages = {}; // reset object else previous errors will persist on the object.
+
+  Patrons.findById(req.params.id).then((patronDetail) => {
+    patronDetail.update(req.body, { // update method returns a promise
+      where: [{
+        id: req.params.id,
+      }],
+    }).then(() => { // patronDetail here is the updated patron
+      res.redirect('/patrons');
+    }).catch((error) => {
+      if (patronDetail) {
+        Loans.findAll({
+          where: {
+            patron_id: req.params.id,
+          },
+          include: [
+            { model: Books },
+            { model: Patrons },
+          ],
+        }).then((loanHistory) => {
+          console.log('Patrons Detail Error Fired');
+
+
+          errorFunction(error, errorMessages);
+          console.log(errorMessages);
+          res.render('patrons/patron_detail', {
+            id: patronDetail.id,
+            first_name: patronDetail.first_name,
+            last_name: patronDetail.last_name,
+            address: patronDetail.address,
+            email: patronDetail.email,
+            library_id: patronDetail.library_id,
+            zip_code: patronDetail.zip_code,
+            errorMessages,
+            loanHistory,
+          });
+        });
+      }
+    });
+  });
+});
+
+// Get All Patrons
+router.get('/patrons', (req, res) => {
+  Patrons.findAll().then((patrons) => {
+    res.render('patrons/all_patrons', { patrons });
   });
 });
 

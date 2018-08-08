@@ -2,21 +2,32 @@ extends layout
 
 block content
 
- if Error.status = 400
-   
- p The page you have requested does not exist.
- p #{Error.message}
- p #{Error.name}
-
+  p Oops, terribly sorry but there appears to have been an error!
+  p If the problem continues please send a screenshot of the gobbledygook below to chris@supermegalibrarycorp.com. We aim to reply to within 200 working days.
+  p 
+  strong SuperMegaLibraryCorp, 
+  | 
+  i Unashamedly squeezing every last drop of profit from your vulnerable local public services since 2008.
   
- if Error.status = 500  
-   
- p The page you have requested is not available
+  p Gobbledygook: 
+  h4= message
+  
+  //- If there's an error object I can call the below, but if it's just a 404 there's no error object
+  if error
+    if (error.status===404)
+        h4= error.status
+        h4 There is no item in our database with that id.
+        
+  if error
+    if error.stack
+        pre #{error.stack}
+
+
  
- a.button(href='/') Home
- p
-   a.button(href='/books') Return to 'All Books'
-   span          
-   a.button(href='/loans') Return to 'All Loans'
-   span          
-   a.button(href='/patrons') Return to 'All Patrons'
+    a.button(href='/') Home
+       span
+       a.button(href='/books') Return to 'All Books'
+       span          
+       a.button(href='/loans') Return to 'All Loans'
+       span          
+       a.button(href='/patrons') Return to 'All Patrons'

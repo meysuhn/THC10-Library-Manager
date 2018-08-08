@@ -3,33 +3,78 @@ extends ../layout
 block content
     //- h1 Patron: #{patronDetail.first_name} #{patronDetail.last_name}
     //- NOTE Fix the above later
-    form(action="/patrons/" + patronDetail.id + "?_method=PUT", method="post")
+    //- form(action="/patrons/" + patronDetail.id + "?_method=PUT", method="post")
+    form(method='post' action=`/patrons/${id}`)
       p
         label(for='first_name') First Name
         if errorMessages
-          input(class='error-input' type='text' name='first_name')
-          span(class='error')=errorMessages.first_name
+          if errorMessages.first_name
+            input(class='error-input' type='text' name='first_name')
+            span(class='error')=errorMessages.first_name
+          else if first_name
+            input#first_name(type='text', name="first_name" value=first_name)
         else 
-          input#first_name(type='text', name="first_name" value=patronDetail.first_name)
+          input#first_name(type='text', name="first_name" value=first_name)
+      
       p
         label(for='last_name') Last Name
-        input#last_name(type='text', name="last_name" value=patronDetail.last_name)
+        if errorMessages
+          if errorMessages.last_name
+            input(class='error-input' type='text' name='last_name')
+            span(class='error')=errorMessages.last_name
+          else if last_name
+            input#last_name(type='text', name="last_name" value=last_name)
+        else 
+          input#last_name(type='text', name="last_name" value=last_name)
+
       p
-        label(for='address')  Address
-        input#address(type='text', name="address" value=patronDetail.address)
+        label(for='address') Address
+        if errorMessages
+          if errorMessages.address
+            input(class='error-input' type='text' name='address')
+            span(class='error')=errorMessages.address
+          else if address
+            input#address(type='text', name="address" value=address)
+        else 
+          input#address(type='text', name="address" value=address)
+            
       p
         label(for='email') Email
-        input#email(type='text', name="email" value=patronDetail.email)
+        if errorMessages
+          if errorMessages.email
+            input(class='error-input' type='text' name='email')
+            span(class='error')=errorMessages.email
+          else if email
+            input#email(type='text', name="email" value=email)
+        else 
+          input#email(type='text', name="email" value=email)
+                
       p
         label(for='library_id') Library ID
-        input#library_id(type='text', name="library_id" value=patronDetail.library_id)
+        if errorMessages
+          if errorMessages.library_id
+            input(class='error-input' type='text' name='library_id')
+            span(class='error')=errorMessages.library_id
+          else if library_id
+            input#library_id(type='text', name="library_id" value=library_id)
+        else 
+          input#library_id(type='text', name="library_id" value=library_id)
+          
       p
         label(for='zip_code') Zip Code
-        input#zip_code(type='text', name="zip_code" value=patronDetail.zip_code)
+        if errorMessages
+          if errorMessages.zip_code
+            input(class='error-input' type='text' name='zip_code')
+            span(class='error')=errorMessages.zip_code
+          else if zip_code
+            input#zip_code(type='text', name="zip_code" value=zip_code)
+        else 
+          input#zip_code(type='text', name="zip_code" value=zip_code)
+
       p
         input(type='submit', value='Update')
     h2 Loan History
     if loanHistory.length > 0
         include ../includes/loan_history.pug
     else 
-      p There is no Loan History for #{patronDetail.first_name} #{patronDetail.last_name}
+      p There is no Loan History for #{first_name} #{last_name}

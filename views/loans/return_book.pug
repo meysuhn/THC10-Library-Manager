@@ -15,9 +15,36 @@ block content
       strong Return By:
       |  #{loanDetail.return_by}
     
-    form(method='post' action=`/loans/${loanDetail.Book.id}/return`)
+    form(method='post' action=`/loans/${loanDetail.id}/return`)
+      //- NOTE The above is much better. Just need to fix the POST route now.
+      
+      //- form(method='post' action=`/loans/${loanDetail.Book.id}/return`)
+        // - previously you were trying to update a loan based on matching a book id with loan id.
+        // - this worked up to a point, but caused problems with later functionality
+        // - such as reserving the info to users when returned_on was blank.
+    
       p
         label(for='returned_on') Returned on:
-        input#returned_on(type='text', name="returned_on" value=todaysDate)
+        if errorMessages
+          if errorMessages.returned_on
+            input#returned_on(class='error-input' type='text', name="returned_on")
+            span(class='error')=errorMessages.returned_on
+          else if returned_on
+            input#returned_on(type='text', name='returned_on' value=returned_on)
+        else
+          input#returned_on(type='text', name='returned_on' value=todaysDate)
       p
         input(type='submit', value='Return Book')
+          
+      
+      
+          //- p
+          //-   label(for='loaned_on') Loaned on:
+          //-   if errorMessages
+          //-     if errorMessages.loaned_on
+          //-       input(class='error-input' type='text' name='loaned_on')
+          //-       span(class='error')=errorMessages.loaned_on
+            //-   else if loaned_on
+            //-     input#loaned_on(type='text', name='loaned_on', value=loaned_on)
+            //- else
+            //-   input#loaned_on(type='text', name='loaned_on' value=newLoanDate)
