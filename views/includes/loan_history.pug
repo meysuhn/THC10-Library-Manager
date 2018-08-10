@@ -5,8 +5,8 @@ table
       th Patron 
       th Loaned on
       th Return by 
-      th Returned on
-      th Action
+      th Status
+      th Return / Reloan
   tbody
     each loan in loanHistory
       tr
@@ -16,8 +16,19 @@ table
           a(href=`/patrons/${loan.Patron.id}`) #{loan.Patron.first_name} #{loan.Patron.last_name}
         td #{loan.loaned_on}
         td #{loan.return_by}
-        td #{loan.returned_on}
+        
+        td 
+          if loan.returned_on
+            =loan.returned_on
+          else if loan.return_by < todaysDate
+              span#overdue Return Overdue
+          else
+              p#loaned Out on loan 
         td
-          a.button(href=`/loans/${loan.id}/return`) Return Book
+          if loan.returned_on
+            a.button#returned(href='/loans/new') Reloan
+            
+          else
+            a.button(href=`/loans/${loan.id}/return`) Return
           
           //- This link is being created on the fly. It says "go to /books/x/return but throw in at x the loan id the current page has from the loanHistory data it has available to it"

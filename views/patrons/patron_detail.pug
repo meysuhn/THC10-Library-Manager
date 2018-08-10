@@ -1,9 +1,8 @@
 extends ../layout
 
 block content
-    //- h1 Patron: #{patronDetail.first_name} #{patronDetail.last_name}
-    //- NOTE Fix the above later
-    //- form(action="/patrons/" + patronDetail.id + "?_method=PUT", method="post")
+    h1 Patron: #{first_name} #{last_name}
+
     form(method='post' action=`/patrons/${id}`)
       p
         label(for='first_name') First Name

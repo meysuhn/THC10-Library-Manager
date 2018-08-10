@@ -17,7 +17,6 @@ block content
             input#title(type='text', name='title', value=title)
         else
           input#title(type='text', name='title', placeholder='enter a title')
-          //- Others will fail out because errorMessages is sending them down that route.
       p
         label(for='author') Author
         if errorMessages
@@ -52,15 +51,3 @@ block content
           input#first_published(type='text' name='first_published', placeholder='YYYY')
       p
         input(type='submit', value='Create New Book')
-          
-      //-/////////////////////////////////////////////
-      //- Temporary just to make sure required objects are accessible.
-      //- if title 
-      //-   p title on req.body is accessible and equals: #{title}
-      //- else
-      //-   p no req.body title to display
-      //- if errorMessages
-      //-   p errorMessages.title is accessible and equals: #{errorMessages.title}
-      //- else 
-      //-   p no errorMessages.title to display
-      //-/////////////////////////////////////////////

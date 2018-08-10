@@ -11,7 +11,7 @@ block content
           th Loaned on
           th Return by
           th Returned on
-          th Action
+          th Return / Reloan
       tbody
         each loan in checkedloans
           tr
@@ -20,8 +20,18 @@ block content
             td
               a(href=`/patrons/${loan.Patron.id}`)=loan.Patron.first_name  + ' ' + loan.Patron.last_name
             td=loan.loaned_on
-            td=loan.return_by
-            td=loan.returned_on
+            td=loan.return_by  
             td
-              a.button(href=`/loans/${loan.id}/return`) Return Book
+              if loan.returned_on
+                =loan.returned_on
+              else if loan.return_by < todaysDate
+                  span#overdue Return Overdue
+              else
+                  p#loaned Out on loan      
+            td
+              if loan.returned_on
+                a.button#returned(href='loans/new') Reloan
+                
+              else
+                a.button(href=`/loans/${loan.id}/return`) Return
         

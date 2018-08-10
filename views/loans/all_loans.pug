@@ -10,8 +10,8 @@ block content
           th Patron
           th Loaned on
           th Return by
-          th Status
-          th Return Book
+          th Returned on
+          th Return / Reloan
           th Delete Entry
       tbody
           each loan in loans
@@ -24,7 +24,7 @@ block content
                 td=loan.return_by
                 td
                   if loan.returned_on
-                    =`Returned` + ` ` + `(` + loan.returned_on + `)`
+                    =loan.returned_on
                   else if loan.return_by < todaysDate
                       span#overdue Return Overdue
                   else

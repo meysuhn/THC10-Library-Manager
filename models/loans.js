@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     book_id: DataTypes.INTEGER,
     patron_id: DataTypes.INTEGER,
     loaned_on: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY, // DATEONLY stops timestamps being added to end of dates.
       validate: {
         notEmpty: {
           msg: "Please enter a valid date (YYYY-MM-DD)"
@@ -18,19 +18,25 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     return_by: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       validate: {
         notEmpty: {
           msg: "Please enter a valid date (YYYY-MM-DD)"
-        }
+        },
+        isDate: {
+          msg: "Please enter a valid date (YYYY-MM-DD)"
+        },
       }
     },
     returned_on: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       validate: {
         notEmpty: {
           msg: "A 'Returned On' date must be entered (YYYY-MM-DD)"
-        }
+        },
+        isDate: {
+          msg: "Please enter a valid date (YYYY-MM-DD)"
+        },
       }
     },
   }, {

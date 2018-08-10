@@ -1,10 +1,8 @@
 extends ../layout
 
 block content
-  h1 Books
+  h1 All Books
   include ../includes/books_nav.pug
-  
-  //- input#bookSearch(type='text', onkeyup='search("chris", bookTitle)', placeholder='Search books ...')
   
   table
     thead
@@ -13,7 +11,6 @@ block content
           th Author
           th Genre
           th Year Released
-          th Delete Book
     tbody
           each book in books
             tr
@@ -22,8 +19,6 @@ block content
               td #{book.author}
               td #{book.genre}
               td #{book.first_published}
-              td 
-                a.button(class='delete' href=`/books/${book.id}/delete`) x
         
     //- 'books' in the each loop above comes from the argument passed in the route's 'then' callback.
       

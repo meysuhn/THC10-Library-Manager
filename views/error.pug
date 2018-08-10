@@ -3,23 +3,25 @@ extends layout
 block content
 
   p Oops, terribly sorry but there appears to have been an error!
-  p If the problem continues please send a screenshot of the gobbledygook below to chris@supermegalibrarycorp.com. We aim to reply to within 200 working days.
+  p If the problem continues please send a screenshot of the Error Stack below to chris@supermegalibrarycorp.com. We aim to reply to within 200 working days.
   p 
   strong SuperMegaLibraryCorp, 
   | 
   i Unashamedly squeezing every last drop of profit from your vulnerable local public services since 2008.
   
-  p Gobbledygook: 
-  h4= message
-  
-  //- If there's an error object I can call the below, but if it's just a 404 there's no error object
+
+  //- If there's an error object I can call the below.
   if error
     if (error.status===404)
-        h4= error.status
-        h4 There is no item in our database with that id.
+        h4= 'Error Code: ' + error.status + ' ' + error.message
+        p There is no item in our database with that id.
+    if (error.status===500)
+        h4= 'Error Code: ' + error.status + ' ' + error.message
+        p Unexpected error. Please try again later.
         
   if error
     if error.stack
+        p Error Stack: 
         pre #{error.stack}
 
 

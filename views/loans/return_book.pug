@@ -16,13 +16,7 @@ block content
       |  #{loanDetail.return_by}
     
     form(method='post' action=`/loans/${loanDetail.id}/return`)
-      //- NOTE The above is much better. Just need to fix the POST route now.
-      
-      //- form(method='post' action=`/loans/${loanDetail.Book.id}/return`)
-        // - previously you were trying to update a loan based on matching a book id with loan id.
-        // - this worked up to a point, but caused problems with later functionality
-        // - such as reserving the info to users when returned_on was blank.
-    
+          
       p
         label(for='returned_on') Returned on:
         if errorMessages

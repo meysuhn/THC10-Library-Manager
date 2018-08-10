@@ -1,18 +1,25 @@
+
+// Required Modules
 const express = require('express');
-const { Books, Loans, Patrons } = require('../models'); // This is Object Destructuring Syntax
-// Require Books, Loans and Patrons Models in this routes file
+const { Books, Loans, Patrons } = require('../models'); // Require Books, Loans and Patrons Models in this routes file
 // This allows us also to use the ORM methods here such as find() etc
 const moment = require('moment');
+const Sequelize = require('sequelize');
+// /////////
 
+// Globals
 const router = express.Router();
+const getDate = () => moment().format('YYYY-MM-DD'); // Get current date in specified format.
+const getDate7DaysFromNow = () => moment(new Date().setDate(new Date().getDate() + 7)).format('YYYY-MM-DD'); // Get date 7 days from today.
+const Op = Sequelize.Op; // sequelize operator
 
-// Get current date in specified format.
-const getDate = () => moment().format('YYYY-MM-DD');
+// Global Vars for GET and POST New Loan
+let availableBooks = []; // array to contain id of each available book
+let patrons = []; // Make patrons data available to catch method on 'POST New Loan'
+// /////////
 
-// Get date 7 days from today.
-const getDate7DaysFromNow = () => moment(new Date().setDate(new Date().getDate() + 7)).format('YYYY-MM-DD');
 
-
+// Error Message Generator for loans.js
 // (1) Error object get passed in here
 // (2) If Sequelize type error it will create messages and display to user
 // (3) If unhandled error then it will ultimately throw to final error handler in app.js
@@ -21,7 +28,6 @@ const errorFunction = (error, errorMessages) => {
   const addValidationErrorMessages = errorMessages;
 
   if (error.name === 'SequelizeValidationError') {
-    console.log('If fired');
     for (let i = 0; i < error.errors.length; i += 1) {
       if (error.errors[i].path === 'loaned_on') {
         addValidationErrorMessages.loaned_on = error.errors[i].message;
@@ -31,14 +37,11 @@ const errorFunction = (error, errorMessages) => {
         addValidationErrorMessages.returned_on = error.errors[i].message;
       }
     }
-  } // else if NOTE !!! to work on errors here!
-  // NOTE I can't see how the error values get back to the rendered file:
-  // (1) Nothing is being returned and
-  // (2) the values are being added to the addValidationErrorMessages object, not errorMessages
+  }
 };
 
 
-// List All Loans
+// GET All Loans
 router.get('/loans', (req, res) => {
   const todaysDate = getDate();
   Loans.findAll({
@@ -52,8 +55,9 @@ router.get('/loans', (req, res) => {
 });
 
 
-// List Checked Out
+// GET Checked Out Loans
 router.get('/loans/checkedloans', (req, res) => {
+  const todaysDate = getDate();
   Loans.findAll({
     where: {
       returned_on: null,
@@ -63,17 +67,36 @@ router.get('/loans/checkedloans', (req, res) => {
       { model: Books },
     ],
   }).then((checkedloans) => {
-    res.render('loans/checked_loans', { checkedloans });
+    console.log(checkedloans);
+    res.render('loans/checked_loans', { checkedloans, todaysDate });
   });
 });
 
-let availableBooks = []; // array to contain id of each available book
-let patrons = []; // Make patrons data available to catch method on 'POST New Loan'
+// GET Overdue Loans
+router.get('/loans/overdueloans', (req, res) => {
+  const todaysDate = getDate();
+  console.log(todaysDate);
+  Loans.findAll({
+    where: {
+      return_by: {
+        [Op.lt]: todaysDate, // Less Than Operator
+      },
+      returned_on: null,
+    },
+    include: [
+      { model: Patrons },
+      { model: Books },
+    ],
+  }).then((overdueLoans) => {
+    console.log(overdueLoans);
+    res.render('loans/overdue_loans', { overdueLoans, todaysDate });
+  });
+});
+
 
 // GET New Loan Page
 router.get('/loans/new', (req, res) => {
   const newLoanDate = getDate();
-  console.log(newLoanDate);
   const returnDate = getDate7DaysFromNow();
   const allBooks = Books.findAll();
   const allLoans = Loans.findAll({
@@ -112,7 +135,6 @@ router.get('/loans/new', (req, res) => {
           availableBooks.push(book);
         }
       });
-      console.log(patrons);
       res.render('loans/new_loan', {
         availableBooks, patrons, newLoanDate, returnDate,
       });
@@ -125,63 +147,24 @@ router.get('/loans/new', (req, res) => {
 // POST New Loan
 router.post('/loans/new', (req, res) => {
   const errorMessages = {}; // reset object else previous errors will persist on the object.
-
   Loans.create(req.body).then(() => { // Call the create ORM method on the Loans model
-    // res.render('new_loan', { newLoanDate, ReturnDate });
     res.redirect('/loans');
   }).catch((error) => {
-    console.log("REQUEST BODY");
-    console.log(req.body);
     errorFunction(error, errorMessages);
-
-    // const thePatrons = Patrons.findAll();
-    // Promise.resolve(thePatrons).then(() => {
-    //   const patrons = thePatrons[0];
-    //   console.log("HERE ARE THE PATRONS");
-    //   console.log(thePatrons.Patrons);
-    //   // console.log(errorMessages);
-    // });
-
     res.render('loans/new_loan', {
       loaned_on: req.body.loaned_on,
       return_by: req.body.return_by,
-      // returned_on: req.body.returned_on,
       errorMessages,
       availableBooks,
       patrons,
     });
-    // NOTE still to finish off this.
   });
 });
 
 
-// List Overdue
-router.get('/loans/overdueloans', (req, res) => {
-  const todaysDate = getDate();
-  Loans.findAll({
-    where: {
-      returned_on: null,
-      return_by: {
-        $lte: todaysDate,
-      },
-    },
-    include: [
-      { model: Patrons },
-      { model: Books },
-    ],
-  }).then((overdueLoans) => {
-    res.render('loans/overdue_loans', { overdueLoans });
-  });
-});
-
-
-// GET Return BOOK.
+// GET Return Loan
 router.get('/loans/:id/return', (req, res) => {
   const todaysDate = getDate();
-  // This below is grabbing the id from the url? Check this in the forum. Link
-  // this up with notes in loan_history.pug
-  console.log('GET REQ PARAMS ID:');
-  console.log(req.params.id);
   Loans.findById(req.params.id, {
     include: [
       {
@@ -192,8 +175,6 @@ router.get('/loans/:id/return', (req, res) => {
       },
     ],
   }).then((loanDetail) => {
-    console.log('GET LOAN DETAIL');
-    console.log(loanDetail);
     res.render('loans/return_book', { todaysDate, loanDetail });
   });
 });
@@ -202,9 +183,6 @@ router.get('/loans/:id/return', (req, res) => {
 // POST Return Loan
 router.post('/loans/:id/return', (req, res) => {
   const errorMessages = {}; // reset object else previous errors will persist on the object.
-  console.log('1st POST REQ PARAMS ID:');
-  console.log(req.params.id); // NOTE this is blank.
-  // const todaysDate = getDate();
   Loans.update(req.body, {
     where: [
       { id: req.params.id },
@@ -212,12 +190,8 @@ router.post('/loans/:id/return', (req, res) => {
       // against the loan in the database with the matching id.
     ],
   }).then(() => { // Call the create ORM method on the Loans model
-    // res.render('new_loan', { newLoanDate, ReturnDate });
     res.redirect('/loans');
   }).catch((error) => {
-    // NOTE the problem is around here.
-    console.log('2nd POST REQ PARAMS ID:');
-    console.log(req.params.id); // NOTE this is blank.
     Loans.findById(req.params.id, {
       include: [
         {
@@ -228,14 +202,10 @@ router.post('/loans/:id/return', (req, res) => {
         },
       ],
     }).then((loanDetail) => {
-      console.log(loanDetail);
-      // NOTE loanDetail is null. This is the problem.
       errorFunction(error, errorMessages);
       res.render('loans/return_book', {
-        // id: bookDetail.id,
         loanDetail,
         errorMessages,
-        // NOTE all the info still needs to be available to return book.
       });
     });
   });
@@ -261,16 +231,10 @@ router.get('/loans/:id/delete', (req, res) => {
 
 // POST Delete Loan
 router.post('/loans/:id/delete', (req, res) => {
-  console.log('post fired');
-  console.log(req.params.id);
-  Loans.findById(req.params.id).then((loan) => {
-    console.log(loan);
-    return loan.destroy();
-    // console.log('Loans fired');
-  }).then(() => {
-    res.redirect('/loans');
-  });
+  Loans.findById(req.params.id)
+    .then(loan => loan.destroy()).then(() => {
+      res.redirect('/loans');
+    });
 });
-
 
 module.exports = router;

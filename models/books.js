@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg: "Genre is a required field"
+        },
+        len: {
+          args: [4, 64],
+          msg: 'Genre must be at least 4 characters'
         }
       }
     },
@@ -36,20 +40,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       validate: {
         notEmpty: {
-          msg: "Required field"
+          msg: "Required Field (YYYY)"
+        },
+        isNumeric: {
+          msg: "Date should be numeric only (YYYY)."
+        },
+        len: {
+          args: [4, 4],
+          msg: 'Please enter a valid date (YYYY)'
         }
       },
-      // validate: {
-      //   isNumeric: {
-      //     msg: "Published year must be numbers only and in the formet YYYY"
-      //   }
-      // },
-      // validate: {
-      //   len: {
-      //     args: [4, 4],
-      //     msg: "Published year must be numbers only and in the formet YYYY"
-      //   }
-      // },
     }
   }, {
     timestamps: false,

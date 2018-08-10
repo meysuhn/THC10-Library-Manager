@@ -36,7 +36,10 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg: "Email is a required field"
-        }
+        },
+        isEmail: {
+          msg: "Please enter a valid email address"
+        },
       }
     },
     library_id: {
@@ -61,7 +64,6 @@ module.exports = (sequelize, DataTypes) => {
   });
   Patrons.associate = function(models) {
     // associations can be defined here
-    //Patrons.hasMany(models.Loans);
     Patrons.hasMany(models.Loans, {foreignKey: 'patron_id'})
   };
   return Patrons;
